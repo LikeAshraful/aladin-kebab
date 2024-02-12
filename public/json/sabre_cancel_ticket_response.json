@@ -1,0 +1,11 @@
+{
+    "timestamp": "2024-01-27T09:56:12",
+    "request": {
+        "errorHandlingPolicy": "HALT_ON_ERROR",
+        "confirmationId": "PVBVFU"
+    },
+    "voidedTickets": [
+        "9979342417844",
+        "9979342417845"
+    ]
+}

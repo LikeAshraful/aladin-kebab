@@ -1,0 +1,68 @@
+{
+  "AirTicketRS": {
+    "ApplicationResults": {
+      "status": "Complete",
+      "Success": [
+        {
+          "timeStamp": "2023-12-09T04:17:45.757Z"
+        }
+      ],
+      "Warning": [
+        {
+          "type": "BusinessLogic",
+          "timeStamp": "2023-12-09T04:17:44.866Z",
+          "SystemSpecificResults": [
+            {
+              "Message": [
+                {
+                  "code": "WARN.SWS.HOST.WARNING_RESPONSE",
+                  "content": "AirTicketLLSRQ: OK     37921"
+                },
+                {
+                  "content": "ETR MESSAGE PROCESSED"
+                },
+                {
+                  "content": "OK 6.6"
+                },
+                {
+                  "content": "OK 2217 TSDMOI TTY REQ PEND"
+                },
+                {
+                  "content": "INVOICED                   - NUMBER  NONE"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "Summary": [
+      {
+        "DocumentNumber": "9109342417817",
+        "LocalIssueDateTime": "2023-12-09T10:17:00",
+        "DocumentType": "TKT",
+        "IssuingLocation": "R5FJ",
+        "Reservation": {
+          "content": "TSDMOI"
+        },
+        "FirstName": "IUBULLAH MR",
+        "LastName": "BIPLOBE",
+        "TotalAmount": {
+          "currencyCode": "BDT",
+          "decimalPlace": 0,
+          "content": "37921"
+        }
+      }
+    ]
+  },
+  "Links": [
+    {
+      "rel": "self",
+      "href": "https://api.cert.platform.sabre.com/v1.2.1/air/ticket"
+    },
+    {
+      "rel": "linkTemplate",
+      "href": "https://api.cert.platform.sabre.com/<version>/air/ticket"
+    }
+  ]
+}

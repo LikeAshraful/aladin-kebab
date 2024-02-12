@@ -1,0 +1,19 @@
+{
+    "product_key": "1122334455",
+    "purchase_key": "BDT-C5A73F-0327B-856E-CE7DC082FD",
+    "domain": "skytriplaravel.test",
+    "full_domain": "skytriplaravel.test/home/bdtask10/.config/composer/vendor/genesisweb/valet-linux-plus/",
+    "whitelist": [
+        "12ca17b49a",
+        "6d16ab695d",
+        "49960de588",
+        "6f32aa4e40",
+        "3537709310",
+        "d80c6d5055",
+        "69b6cfdb30",
+        "77fca717a1"
+    ],
+    "purchase_key_used": false,
+    "serverAliveOrNot": true,
+    "user_id": "dasadad"
+}
