@@ -6,5 +6,6 @@
     "Setting": true,
     "Language": true,
     "Backup": true,
-    "Report": true
+    "Report": true,
+    "Menu": true
 }
