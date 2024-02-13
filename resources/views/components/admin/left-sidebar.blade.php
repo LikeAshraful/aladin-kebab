@@ -29,6 +29,24 @@
 
             <ul class="metismenu">
 
+                <x-admin.multi-nav>
+
+                    @if (module_active('menu') && can('permission_management'))
+                        <x-slot name="title">
+                            <i class="typcn typcn-lock-open-outline"></i> {{ __('Menu Management') }}
+                        </x-slot>
+                    @endif
+
+                    @if (module_active('menu') && can('permission_management'))
+                        <x-admin.nav-link href="{{ route('admin.menu.category.index') }}">
+                            {{ __('Menu Category') }}
+                        </x-admin.nav-link>
+                    @endif
+
+
+
+                </x-admin.multi-nav>
+
 
                 @if (can('permission_management') ||
                         can('role_read') ||
