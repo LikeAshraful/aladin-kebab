@@ -7,24 +7,26 @@ use Illuminate\Database\Seeder;
 use Modules\Permission\Entities\Permission;
 use Modules\Role\Entities\Role;
 
-class RoleTableSeeder extends Seeder {
+class RoleTableSeeder extends Seeder
+{
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run() {
+    public function run()
+    {
         $permissions = [
-            'General'     => [],
-            'User'        => [
+            'General' => [],
+            'User' => [
                 'user_management',
                 'role_management',
                 'permission_management',
             ],
-            'Dashboard'   => [
+            'Dashboard' => [
                 'overall_count_report',
             ],
-            'Setting'     => [
+            'Setting' => [
                 'setting_management',
                 'mail_setting_management',
                 'recaptcha_setting_management',
@@ -32,7 +34,7 @@ class RoleTableSeeder extends Seeder {
                 'env_setting_management',
                 'language_setting_management',
             ],
-            'Backup'      => [
+            'Backup' => [
                 'backup_management',
             ],
 
@@ -42,7 +44,7 @@ class RoleTableSeeder extends Seeder {
                 'pending_transactions',
                 'bank_statements',
             ],
-            'Reports'     => [
+            'Reports' => [
                 'view_reports',
             ],
         ];
@@ -58,7 +60,7 @@ class RoleTableSeeder extends Seeder {
 
             foreach ($groups as $permission) {
                 Permission::create([
-                    'name'  => $permission,
+                    'name' => $permission,
                     'group' => $group,
                 ])->assignRole($administrator);
             }
@@ -72,18 +74,18 @@ class RoleTableSeeder extends Seeder {
 
         $users = [
             [
-                'name'              => 'Admin',
-                'email'             => 'admin@gmail.com',
-                'password'          => Hash::make('admin'),
+                'name' => 'Admin',
+                'email' => 'admin@gmail.com',
+                'password' => Hash::make('admin'),
                 'email_verified_at' => now(),
-                'status'            => 'Active',
+                'status' => 'Active',
 
             ], [
-                'name'              => 'User',
-                'email'             => 'user@gmail.com',
-                'password'          => Hash::make('user'),
+                'name' => 'User',
+                'email' => 'user@gmail.com',
+                'password' => Hash::make('user'),
                 'email_verified_at' => now(),
-                'status'            => 'Active',
+                'status' => 'Active',
             ],
         ];
 
@@ -94,5 +96,4 @@ class RoleTableSeeder extends Seeder {
         User::find(1)->assignRole('Administrator');
         User::find(2)->assignRole('User');
     }
-
 }

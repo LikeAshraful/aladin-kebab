@@ -13,7 +13,7 @@ use Modules\Setting\Entities\AppSettingBank;
 /**
  * get setting value
  */
-function setting(string $key, string $default = null, bool $file = false): ?string
+function setting(string $key, ?string $default = null, bool $file = false): ?string
 {
     $data = Modules\Setting\Facades\Setting::get($key);
 
@@ -27,7 +27,7 @@ function setting(string $key, string $default = null, bool $file = false): ?stri
 /**
  * generate asset url
  */
-function custom_asset(string $file = null, string $default = null, string $path = null): string
+function custom_asset(?string $file = null, ?string $default = null, ?string $path = null): string
 {
     if ($file) {
         return app('url')->asset($path.'/'.$file.'?v=1');
@@ -52,7 +52,7 @@ function storage_asset($file = null, $default = null): string
  *
  * @return mixed
  */
-function admin_asset(string $file = null, string $default = null): string
+function admin_asset(?string $file = null, ?string $default = null): string
 {
     return custom_asset($file, $default, 'admin-assets');
 }
@@ -60,7 +60,7 @@ function admin_asset(string $file = null, string $default = null): string
 /**
  * nanopkg asset url
  */
-function nanopkg_asset(string $file = null, string $default = null): string
+function nanopkg_asset(?string $file = null, ?string $default = null): string
 {
     return custom_asset($file, $default, 'nanopkg-assets');
 }
@@ -68,14 +68,14 @@ function nanopkg_asset(string $file = null, string $default = null): string
 /**
  * module asset url
  */
-function module_asset(string $file = null, string $default = null): string
+function module_asset(?string $file = null, ?string $default = null): string
 {
     return custom_asset($file, $default, 'module-assets');
 }
 /**
  * front asset url
  */
-function front_asset(string $file = null, string $default = null): string
+function front_asset(?string $file = null, ?string $default = null): string
 {
     return custom_asset($file, $default, 'front-assets');
 }

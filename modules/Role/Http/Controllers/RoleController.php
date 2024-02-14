@@ -132,7 +132,7 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     *  @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Role $role)
     {
@@ -154,7 +154,7 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     *  @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function destroy(Role $role)
     {

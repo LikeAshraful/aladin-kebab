@@ -65,7 +65,7 @@ if (is_post_request()) {
                 exit();
             }
 
-// Check if the connection was successful
+            // Check if the connection was successful
             if (mysqli_connect_errno()) {
                 // Connection failed, print the error message
                 echo json_encode([
@@ -151,9 +151,9 @@ if (is_post_request()) {
                 ]);
             }
 
-// $role_sql     = "INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES (1, 'App\\\Models\\\User', {$user_id})";
+            // $role_sql     = "INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES (1, 'App\\\Models\\\User', {$user_id})";
 
-// $role_result  = mysqli_query($connect, $role_sql);
+            // $role_result  = mysqli_query($connect, $role_sql);
 
             // if ($role_result) {
             try {

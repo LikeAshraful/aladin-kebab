@@ -10,10 +10,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Modules\Auth\Traits\HasProfilePhoto;
 use Spatie\Permission\Traits\HasRoles;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
-{
+class User extends Authenticatable {
     use ActionBtn;
     use HasFactory;
     use HasProfilePhoto;
@@ -44,7 +42,6 @@ class User extends Authenticatable implements JWTSubject
         'address',
         'status',
     ];
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -77,11 +74,10 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Status list.
      */
-    public static function statusList(): array
-    {
+    public static function statusList(): array {
         return [
-            'Pending' => 'Pending',
-            'Active' => 'Active',
+            'Pending'   => 'Pending',
+            'Active'    => 'Active',
             'Suspended' => 'Suspended',
         ];
     }
@@ -89,10 +85,9 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Gender List.
      */
-    public static function genderList(): array
-    {
+    public static function genderList(): array {
         return [
-            'Male' => 'Male',
+            'Male'   => 'Male',
             'Female' => 'Female',
             'Others' => 'Others',
         ];
@@ -101,21 +96,18 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Format User Created At.
      */
-    public function getCreatedAtAttribute(): string
-    {
+    public function getCreatedAtAttribute(): string {
         return \date('d M, Y', \strtotime($this->attributes['created_at']));
     }
 
     /**
      * Format User Updated At.
      */
-    public function getUpdatedAtAttribute(): string
-    {
+    public function getUpdatedAtAttribute(): string {
         return \date('d M, Y', \strtotime($this->attributes['updated_at']));
     }
 
-    public function favTemplate()
-    {
+    public function favTemplate() {
         return $this->belongsToMany(Template::class, 'user_fav_template', 'template_id', 'user_id');
     }
 
@@ -124,8 +116,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return mixed
      */
-    public function getJWTIdentifier()
-    {
+    public function getJWTIdentifier() {
         return $this->getKey();
     }
 
@@ -134,8 +125,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return array
      */
-    public function getJWTCustomClaims()
-    {
+    public function getJWTCustomClaims() {
         return [];
     }
 }

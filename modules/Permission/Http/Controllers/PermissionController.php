@@ -82,7 +82,7 @@ class PermissionController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \Modules\Permission\Entities\Permission  $permission
-     *  @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function edit(Request $request)
     {
@@ -101,7 +101,7 @@ class PermissionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Modules\Permission\Entities\Permission  $permission
-     *  @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
@@ -124,7 +124,7 @@ class PermissionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     *  @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function destroy(Permission $permission)
     {

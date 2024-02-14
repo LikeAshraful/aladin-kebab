@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Rules\Password;
-use Modules\Customer\Entities\Customers;
 
 class AuthController extends Controller
 {
@@ -165,8 +164,6 @@ class AuthController extends Controller
                 'user_type' => 3,
             ]);
 
-  
-
             DB::commit();
 
             return sendSuccessResponse('Registration Successful !', $user, 200);
@@ -174,8 +171,6 @@ class AuthController extends Controller
             return sendErrorResponse('Something Went Wrong!', 'Something Went Wrong!', 500);
         }
     }
-
- 
 
     public function update_profile(Request $request)
     {
@@ -214,8 +209,6 @@ class AuthController extends Controller
                 // Delete image file from storage folder
                 $request->profile_photo_url_old ? Storage::delete($request->profile_photo_url_old) : null;
             }
-
-  
 
             $user = $this->agentinfo(auth('jwt_auth')->user()->id);
             $agent_id = $user->agent->id;

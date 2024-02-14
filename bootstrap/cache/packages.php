@@ -1,11 +1,4 @@
 <?php return array (
-  'albertcht/invisible-recaptcha' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'AlbertCht\\InvisibleReCaptcha\\InvisibleReCaptchaServiceProvider',
-    ),
-  ),
   'artesaos/seotools' => 
   array (
     'providers' => 
@@ -19,51 +12,6 @@
       'Twitter' => 'Artesaos\\SEOTools\\Facades\\TwitterCard',
       'JsonLd' => 'Artesaos\\SEOTools\\Facades\\JsonLd',
       'SEO' => 'Artesaos\\SEOTools\\Facades\\SEOTools',
-    ),
-  ),
-  'barryvdh/laravel-debugbar' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Debugbar' => 'Barryvdh\\Debugbar\\Facades\\Debugbar',
-    ),
-  ),
-  'barryvdh/laravel-dompdf' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'PDF' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
-    ),
-  ),
-  'barryvdh/laravel-snappy' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\Snappy\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'PDF' => 'Barryvdh\\Snappy\\Facades\\SnappyPdf',
-      'SnappyImage' => 'Barryvdh\\Snappy\\Facades\\SnappyImage',
-    ),
-  ),
-  'intervention/image' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Intervention\\Image\\ImageServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Image' => 'Intervention\\Image\\Facades\\Image',
     ),
   ),
   'jenssegers/agent' => 
@@ -123,16 +71,15 @@
       0 => 'Laravel\\Ui\\UiServiceProvider',
     ),
   ),
-  'laravelcollective/html' => 
+  'livewire/livewire' => 
   array (
     'providers' => 
     array (
-      0 => 'Collective\\Html\\HtmlServiceProvider',
+      0 => 'Livewire\\LivewireServiceProvider',
     ),
     'aliases' => 
     array (
-      'Form' => 'Collective\\Html\\FormFacade',
-      'Html' => 'Collective\\Html\\HtmlFacade',
+      'Livewire' => 'Livewire\\Livewire',
     ),
   ),
   'maatwebsite/excel' => 
@@ -178,13 +125,6 @@
       'Module' => 'Nwidart\\Modules\\Facades\\Module',
     ),
   ),
-  'renatomarinho/laravel-page-speed' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'RenatoMarinho\\LaravelPageSpeed\\ServiceProvider',
-    ),
-  ),
   'spatie/laravel-backup' => 
   array (
     'providers' => 
@@ -228,43 +168,6 @@
       0 => 'Spatie\\Sitemap\\SitemapServiceProvider',
     ),
   ),
-  'spatie/laravel-stripe-webhooks' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Spatie\\StripeWebhooks\\StripeWebhooksServiceProvider',
-    ),
-  ),
-  'spatie/laravel-webhook-client' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Spatie\\WebhookClient\\WebhookClientServiceProvider',
-    ),
-  ),
-  'srmklive/paypal' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Srmklive\\PayPal\\Providers\\PayPalServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'PayPal' => 'Srmklive\\PayPal\\Facades\\PayPal',
-    ),
-  ),
-  'tomfordrumm/jwt-auth' => 
-  array (
-    'aliases' => 
-    array (
-      'JWTAuth' => 'Tymon\\JWTAuth\\Facades\\JWTAuth',
-      'JWTFactory' => 'Tymon\\JWTAuth\\Facades\\JWTFactory',
-    ),
-    'providers' => 
-    array (
-      0 => 'Tymon\\JWTAuth\\Providers\\LaravelServiceProvider',
-    ),
-  ),
   'yajra/laravel-datatables-buttons' => 
   array (
     'providers' => 
@@ -277,6 +180,13 @@
     'providers' => 
     array (
       0 => 'Yajra\\DataTables\\EditorServiceProvider',
+    ),
+  ),
+  'yajra/laravel-datatables-export' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Yajra\\DataTables\\ExportServiceProvider',
     ),
   ),
   'yajra/laravel-datatables-fractal' => 
