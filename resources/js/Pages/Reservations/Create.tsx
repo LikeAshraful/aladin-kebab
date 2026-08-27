@@ -12,13 +12,16 @@ import {
     ArrowRight,
     Utensils
 } from 'lucide-react';
+import { translations, Locale } from '../../lib/i18n';
 
 interface ReservationCreateProps extends PageProps {
     branches: Branch[];
     selectedBranch: Branch | null;
 }
 
-export default function ReservationCreate({ branches, selectedBranch }: ReservationCreateProps) {
+export default function ReservationCreate({ branches, selectedBranch, locale = 'pl' }: ReservationCreateProps) {
+    const currentLocale = (locale as Locale) || 'pl';
+    const t = translations[currentLocale] || translations.pl;
     const { auth } = usePage<PageProps>().props;
 
     const { data, setData, post, processing, errors } = useForm({
@@ -44,21 +47,28 @@ export default function ReservationCreate({ branches, selectedBranch }: Reservat
         post(route('reservations.store'));
     };
 
+    const seatingOptions = [
+        { key: 'indoor', label: t.seatingIndoor },
+        { key: 'outdoor', label: t.seatingOutdoor },
+        { key: 'terrace', label: t.seatingTerrace },
+        { key: 'quiet_corner', label: t.seatingQuiet },
+    ];
+
     return (
         <AppLayout branches={branches} selectedBranch={selectedBranch}>
-            <Head title="Rezerwacja Stolika — Aladen Spicy Kebab" />
+            <Head title={`${t.bookTableTitle} — ${t.brandName}`} />
 
             <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 space-y-8">
                 <div className="text-center space-y-2">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 font-bold text-xs">
                         <CalendarIcon className="w-3.5 h-3.5" />
-                        <span>Darmowa Rezerwacja Online</span>
+                        <span>{t.freeOnlineReservation}</span>
                     </div>
                     <h1 className="text-3xl sm:text-4xl font-black text-white">
-                        Zarezerwuj Stolik w Aladen
+                        {t.bookTableTitle}
                     </h1>
                     <p className="text-xs sm:text-sm text-neutral-400 max-w-lg mx-auto">
-                        Ciesz się gorącymi potrawami z grilla w komfortowych warunkach. Wybierz dogodny termin i preferowane miejsce.
+                        {t.bookTableSub}
                     </p>
                 </div>
 
@@ -66,7 +76,7 @@ export default function ReservationCreate({ branches, selectedBranch }: Reservat
                     {/* Branch Picker */}
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-neutral-300 block uppercase tracking-wider">
-                            Wybierz Restaurację / Filię *
+                            {t.selectBranchRequired}
                         </label>
                         <select
                             value={data.branch_id}
@@ -86,7 +96,7 @@ export default function ReservationCreate({ branches, selectedBranch }: Reservat
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                             <label className="text-xs font-bold text-neutral-300 block mb-1">
-                                Liczba osób *
+                                {t.guestsCount}
                             </label>
                             <input
                                 type="number"
@@ -101,7 +111,7 @@ export default function ReservationCreate({ branches, selectedBranch }: Reservat
 
                         <div>
                             <label className="text-xs font-bold text-neutral-300 block mb-1">
-                                Data wizyty *
+                                {t.visitDate}
                             </label>
                             <input
                                 type="date"
@@ -114,7 +124,7 @@ export default function ReservationCreate({ branches, selectedBranch }: Reservat
 
                         <div>
                             <label className="text-xs font-bold text-neutral-300 block mb-1">
-                                Godzina *
+                                {t.visitTime}
                             </label>
                             <select
                                 value={data.reservation_time}
@@ -134,15 +144,10 @@ export default function ReservationCreate({ branches, selectedBranch }: Reservat
                     {/* Seating preference */}
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-neutral-300 block uppercase tracking-wider">
-                            Preferowana Strefa Miejsca
+                            {t.seatingPref}
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                            {[
-                                { key: 'indoor', label: 'Sala Główna' },
-                                { key: 'outdoor', label: 'Ogródek' },
-                                { key: 'terrace', label: 'Taras' },
-                                { key: 'quiet_corner', label: 'Cichy Kącik / VIP' },
-                            ].map((pref) => (
+                            {seatingOptions.map((pref) => (
                                 <button
                                     type="button"
                                     key={pref.key}
@@ -163,13 +168,13 @@ export default function ReservationCreate({ branches, selectedBranch }: Reservat
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-neutral-800">
                         <div>
                             <label className="text-xs font-semibold text-neutral-300 block mb-1">
-                                Imię i nazwisko osoby rezerwującej *
+                                {t.bookerName}
                             </label>
                             <input
                                 type="text"
                                 value={data.customer_name}
                                 onChange={(e) => setData('customer_name', e.target.value)}
-                                placeholder="Jan Kowalski"
+                                placeholder={currentLocale === 'en' ? 'John Doe' : 'Jan Kowalski'}
                                 className="w-full bg-neutral-800 border border-neutral-700 rounded-2xl p-3 text-xs text-white outline-none focus:ring-2 focus:ring-amber-500"
                             />
                             {errors.customer_name && <span className="text-xs text-red-400">{errors.customer_name}</span>}
@@ -177,7 +182,7 @@ export default function ReservationCreate({ branches, selectedBranch }: Reservat
 
                         <div>
                             <label className="text-xs font-semibold text-neutral-300 block mb-1">
-                                Telefon do potwierdzenia *
+                                {t.bookerPhone}
                             </label>
                             <input
                                 type="tel"
@@ -191,25 +196,25 @@ export default function ReservationCreate({ branches, selectedBranch }: Reservat
 
                         <div className="sm:col-span-2">
                             <label className="text-xs font-semibold text-neutral-300 block mb-1">
-                                Adres e-mail (do powiadomień)
+                                {t.bookerEmail}
                             </label>
                             <input
                                 type="email"
                                 value={data.customer_email}
                                 onChange={(e) => setData('customer_email', e.target.value)}
-                                placeholder="jan.kowalski@example.com"
+                                placeholder={currentLocale === 'en' ? 'john.doe@example.com' : 'jan.kowalski@example.com'}
                                 className="w-full bg-neutral-800 border border-neutral-700 rounded-2xl p-3 text-xs text-white outline-none focus:ring-2 focus:ring-amber-500"
                             />
                         </div>
 
                         <div className="sm:col-span-2">
                             <label className="text-xs font-semibold text-neutral-300 block mb-1">
-                                Dodatkowe uwagi / życzenia specjalne:
+                                {t.specialRequests}
                             </label>
                             <textarea
                                 value={data.notes}
                                 onChange={(e) => setData('notes', e.target.value)}
-                                placeholder="np. krzesełko dla dziecka, rezerwacja z okazji urodzin..."
+                                placeholder={t.specialRequestsPlaceholder}
                                 rows={2}
                                 className="w-full bg-neutral-800 border border-neutral-700 rounded-2xl p-3 text-xs text-white outline-none focus:ring-2 focus:ring-amber-500"
                             />
@@ -221,7 +226,7 @@ export default function ReservationCreate({ branches, selectedBranch }: Reservat
                         disabled={processing}
                         className="w-full py-4 rounded-2xl bg-gradient-to-r from-red-600 via-amber-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-sm flex items-center justify-center gap-2 shadow-xl shadow-red-600/20 hover:scale-[1.01] transition-all disabled:opacity-50"
                     >
-                        <span>{processing ? 'Przesyłanie...' : 'Zarezerwuj Stolik Online'}</span>
+                        <span>{processing ? t.submitting : t.submitReservation}</span>
                         <ArrowRight className="w-4 h-4" />
                     </button>
                 </form>

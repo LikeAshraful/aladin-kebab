@@ -13,15 +13,19 @@ import {
     Sparkles, 
     QrCode 
 } from 'lucide-react';
+import { translations, Locale } from '../../lib/i18n';
 
 interface ReservationShowProps extends PageProps {
     reservation: Reservation;
 }
 
-export default function ReservationShow({ reservation }: ReservationShowProps) {
+export default function ReservationShow({ reservation, locale = 'pl' }: ReservationShowProps) {
+    const currentLocale = (locale as Locale) || 'pl';
+    const t = translations[currentLocale] || translations.pl;
+
     return (
         <AppLayout branches={[]} selectedBranch={reservation.branch || null}>
-            <Head title={`Rezerwacja #${reservation.reservation_code} — Aladen Kebab`} />
+            <Head title={`${t.bookTableTitle} #${reservation.reservation_code} — ${t.brandName}`} />
 
             <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 space-y-6">
                 <div className="text-center space-y-2">
@@ -29,10 +33,10 @@ export default function ReservationShow({ reservation }: ReservationShowProps) {
                         <CheckCircle2 className="w-8 h-8" />
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-black text-white">
-                        Rezerwacja Zarejestrowana!
+                        {t.reservationConfirmedTitle}
                     </h1>
                     <p className="text-xs sm:text-sm text-neutral-400">
-                        Oto szczegóły Twojej rezerwacji stolika w Aladen Spicy Kebab
+                        {t.reservationConfirmedSub}
                     </p>
                 </div>
 
@@ -41,7 +45,7 @@ export default function ReservationShow({ reservation }: ReservationShowProps) {
                     <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
                         <div>
                             <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">
-                                Kod Rezerwacji
+                                {t.reservationCode}
                             </span>
                             <div className="text-2xl font-black font-mono text-amber-400">
                                 {reservation.reservation_code}
@@ -54,7 +58,7 @@ export default function ReservationShow({ reservation }: ReservationShowProps) {
                                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
                                     : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
                             }`}>
-                                {reservation.status === 'confirmed' ? '✓ Potwierdzona' : '⏳ Oczekuje'}
+                                {reservation.status === 'confirmed' ? t.statusConfirmed : t.statusPending}
                             </span>
                         </div>
                     </div>
@@ -64,7 +68,7 @@ export default function ReservationShow({ reservation }: ReservationShowProps) {
                         <div className="p-3.5 rounded-2xl bg-neutral-950/80 border border-neutral-800 space-y-1">
                             <span className="text-neutral-500 font-semibold flex items-center gap-1">
                                 <Calendar className="w-3.5 h-3.5 text-amber-400" />
-                                <span>Data:</span>
+                                <span>{t.date}</span>
                             </span>
                             <div className="font-black text-sm text-white">{reservation.reservation_date}</div>
                         </div>
@@ -72,7 +76,7 @@ export default function ReservationShow({ reservation }: ReservationShowProps) {
                         <div className="p-3.5 rounded-2xl bg-neutral-950/80 border border-neutral-800 space-y-1">
                             <span className="text-neutral-500 font-semibold flex items-center gap-1">
                                 <Clock className="w-3.5 h-3.5 text-amber-400" />
-                                <span>Godzina:</span>
+                                <span>{t.time}</span>
                             </span>
                             <div className="font-black text-sm text-white">{reservation.reservation_time}</div>
                         </div>
@@ -80,15 +84,15 @@ export default function ReservationShow({ reservation }: ReservationShowProps) {
                         <div className="p-3.5 rounded-2xl bg-neutral-950/80 border border-neutral-800 space-y-1">
                             <span className="text-neutral-500 font-semibold flex items-center gap-1">
                                 <Users className="w-3.5 h-3.5 text-amber-400" />
-                                <span>Liczba gości:</span>
+                                <span>{t.numberOfGuests}</span>
                             </span>
-                            <div className="font-black text-sm text-white">{reservation.guests_count} os.</div>
+                            <div className="font-black text-sm text-white">{reservation.guests_count} {t.guestsSuffix}</div>
                         </div>
 
                         <div className="p-3.5 rounded-2xl bg-neutral-950/80 border border-neutral-800 space-y-1">
-                            <span className="text-neutral-500 font-semibold">Stolik:</span>
+                            <span className="text-neutral-500 font-semibold">{t.tableAssigned}</span>
                             <div className="font-black text-sm text-amber-400">
-                                {reservation.table_assigned || 'Do przydziału'}
+                                {reservation.table_assigned || t.toBeAssigned}
                             </div>
                         </div>
                     </div>
@@ -110,7 +114,7 @@ export default function ReservationShow({ reservation }: ReservationShowProps) {
 
                     {reservation.notes && (
                         <div className="text-xs text-neutral-400 bg-neutral-950/50 p-3 rounded-xl border border-neutral-800">
-                            <strong>Uwagi:</strong> {reservation.notes}
+                            <strong>{t.notes}</strong> {reservation.notes}
                         </div>
                     )}
                 </div>
@@ -121,7 +125,7 @@ export default function ReservationShow({ reservation }: ReservationShowProps) {
                         className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 hover:text-amber-300 underline"
                     >
                         <ArrowLeft className="w-4 h-4" />
-                        <span>Wróć do strony głównej</span>
+                        <span>{t.backToHome}</span>
                     </Link>
                 </div>
             </div>

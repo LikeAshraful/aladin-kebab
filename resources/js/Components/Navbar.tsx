@@ -53,9 +53,9 @@ export const Navbar: React.FC<NavbarProps> = ({ branches, selectedBranch }) => {
             {/* Top Bar for announcement / quick switch */}
             <div className="bg-gradient-to-r from-red-600 via-amber-600 to-red-600 text-white text-xs font-semibold py-1.5 px-4 text-center tracking-wide flex items-center justify-center gap-2">
                 <Flame className="w-3.5 h-3.5 animate-bounce text-yellow-300" />
-                <span>Aladen Spicy Kebab: Świeże mięso 100%, autorskie pieczywo & legendarne ostre sosy Habanero!</span>
+                <span>{t.topAnnouncement}</span>
                 <span className="hidden md:inline-block bg-black/20 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
-                    Darmowa dostawa od 75 zł
+                    {t.freeDeliveryFromBanner}
                 </span>
             </div>
 
@@ -72,7 +72,7 @@ export const Navbar: React.FC<NavbarProps> = ({ branches, selectedBranch }) => {
                                     ALADEN <span className="text-amber-400">KEBAB</span>
                                 </span>
                                 <span className="hidden sm:block text-[10px] text-neutral-400 font-medium tracking-wider uppercase">
-                                    Spicy & Authentic • Poland
+                                    {t.taglineSub}
                                 </span>
                             </div>
                         </Link>
@@ -96,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({ branches, selectedBranch }) => {
                                 <div className="absolute left-0 mt-2 w-80 rounded-2xl bg-neutral-900 border border-neutral-700 shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2">
                                     <div className="p-2 border-b border-neutral-800 mb-1 flex items-center justify-between">
                                         <span className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
-                                            Wybierz filię Aladen
+                                            {t.chooseBranchTitle}
                                         </span>
                                         <button
                                             onClick={() => {
@@ -105,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({ branches, selectedBranch }) => {
                                             }}
                                             className="text-xs text-amber-400 hover:text-amber-300 font-medium underline"
                                         >
-                                            Wykryj GPS
+                                            {t.detectGps}
                                         </button>
                                     </div>
                                     <div className="space-y-1 max-h-64 overflow-y-auto">
@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({ branches, selectedBranch }) => {
                                                     <div className="text-sm font-semibold truncate">{b.name}</div>
                                                     <div className="text-xs text-neutral-400">{b.address}, {b.city}</div>
                                                     <div className="text-[10px] text-amber-400/90 mt-0.5 font-medium">
-                                                        Dostawa: min. {b.min_order_amount} zł • Czas: ~{b.estimated_delivery_time_minutes} min
+                                                        {t.minDelivery.replace('{amount}', String(b.min_order_amount))} • {t.estTime.replace('{time}', String(b.estimated_delivery_time_minutes))}
                                                     </div>
                                                 </div>
                                             </button>
@@ -298,7 +298,7 @@ export const Navbar: React.FC<NavbarProps> = ({ branches, selectedBranch }) => {
                     <div className="lg:hidden py-4 border-t border-neutral-800 space-y-3 animate-in fade-in">
                         {/* Mobile Branch Selector */}
                         <div className="bg-neutral-800/80 p-3 rounded-xl">
-                            <div className="text-xs text-neutral-400 font-semibold mb-1">Filia:</div>
+                            <div className="text-xs text-neutral-400 font-semibold mb-1">{t.selectBranch}:</div>
                             <button
                                 onClick={() => {
                                     setMobileMenuOpen(false);
@@ -310,7 +310,7 @@ export const Navbar: React.FC<NavbarProps> = ({ branches, selectedBranch }) => {
                                     <MapPin className="w-4 h-4" />
                                     {selectedBranch ? selectedBranch.name : t.selectBranch}
                                 </span>
-                                <span className="text-xs underline text-neutral-300">Zmień</span>
+                                <span className="text-xs underline text-neutral-300">{t.changeBranch}</span>
                             </button>
                         </div>
 

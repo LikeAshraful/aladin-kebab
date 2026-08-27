@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { X, Printer, Check, Copy } from 'lucide-react';
+import { usePage } from '@inertiajs/react';
+import { PageProps } from '../types';
+import { translations, Locale } from '../lib/i18n';
 
 interface ThermalReceiptModalProps {
     receiptText: string | null;
@@ -7,6 +10,10 @@ interface ThermalReceiptModalProps {
 }
 
 export const ThermalReceiptModal: React.FC<ThermalReceiptModalProps> = ({ receiptText, onClose }) => {
+    const { locale = 'pl' } = usePage<PageProps>().props;
+    const currentLocale = (locale as Locale) || 'pl';
+    const t = translations[currentLocale] || translations.pl;
+
     const [copied, setCopied] = useState(false);
 
     if (!receiptText) return null;
@@ -17,7 +24,7 @@ export const ThermalReceiptModal: React.FC<ThermalReceiptModalProps> = ({ receip
             printWindow.document.write(`
                 <html>
                 <head>
-                    <title>Druk Paragonu POS - Aladen Kebab</title>
+                    <title>${t.brandName} - POS</title>
                     <style>
                         @page { size: 80mm auto; margin: 0; }
                         body {
@@ -58,8 +65,8 @@ export const ThermalReceiptModal: React.FC<ThermalReceiptModalProps> = ({ receip
                             <Printer className="w-4 h-4" />
                         </div>
                         <div>
-                            <h4 className="text-base font-black text-white">Podgląd Wydruku POS (80mm)</h4>
-                            <span className="text-xs text-neutral-400">Format ESC-POS Drukarki Fiskalnej/Kuchennej</span>
+                            <h4 className="text-base font-black text-white">{t.receiptPreviewTitle}</h4>
+                            <span className="text-xs text-neutral-400">{t.receiptFormatSubtitle}</span>
                         </div>
                     </div>
 
@@ -67,7 +74,7 @@ export const ThermalReceiptModal: React.FC<ThermalReceiptModalProps> = ({ receip
                         onClick={onClose}
                         className="p-2 rounded-full bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white"
                     >
-                        <X className="w-4 h-4" />
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
@@ -84,7 +91,7 @@ export const ThermalReceiptModal: React.FC<ThermalReceiptModalProps> = ({ receip
                         className="px-4 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white text-xs font-bold flex items-center gap-1.5 transition-colors"
                     >
                         {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                        <span>{copied ? 'Skopiowano!' : 'Kopiuj tekst'}</span>
+                        <span>{copied ? t.copied : t.copyText}</span>
                     </button>
 
                     <button
@@ -93,7 +100,7 @@ export const ThermalReceiptModal: React.FC<ThermalReceiptModalProps> = ({ receip
                         className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-amber-500/20 transition-all"
                     >
                         <Printer className="w-4 h-4" />
-                        <span>Drukuj paragon (ESC-POS)</span>
+                        <span>{t.printReceiptBtn}</span>
                     </button>
                 </div>
             </div>

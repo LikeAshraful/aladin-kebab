@@ -61,6 +61,11 @@ class HandleInertiaRequests extends Middleware
             $branches = [];
         }
 
+        $locale = $request->session()->get('locale', $user?->preferred_language ?? 'pl');
+        if (in_array($locale, ['pl', 'en'])) {
+            app()->setLocale($locale);
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -72,7 +77,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
                 'info' => fn () => $request->session()->get('info'),
             ],
-            'locale' => fn () => $request->session()->get('locale', 'pl'),
+            'locale' => $locale,
         ];
     }
 }

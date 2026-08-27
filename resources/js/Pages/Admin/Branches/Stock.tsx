@@ -29,7 +29,9 @@ export default function BranchStock({
     selectedBranch,
     categories,
     isSuperAdmin,
+    locale = 'pl',
 }: BranchStockProps) {
+    const currentLocale = (locale as any) || 'pl';
     const [branchId, setBranchId] = useState(selectedBranch.id);
     const [togglingProductId, setTogglingProductId] = useState<number | null>(null);
 
@@ -111,7 +113,7 @@ export default function BranchStock({
                                 {categories.map((cat) => (
                                     <div key={cat.id} className="space-y-2.5">
                                         <div className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-                                            {getLocalizedText(cat.name, 'pl')}
+                                            {getLocalizedText(cat.name, currentLocale)}
                                         </div>
 
                                         <div className="space-y-2">
@@ -127,7 +129,7 @@ export default function BranchStock({
                                                     >
                                                         <div className="min-w-0 pr-3">
                                                             <div className="text-xs font-bold text-white truncate">
-                                                                {getLocalizedText(product.name, 'pl')}
+                                                                {getLocalizedText(product.name, currentLocale)}
                                                             </div>
                                                             <div className="text-[11px] text-neutral-400">
                                                                 Cena bazowa: {formatPrice(Number(product.base_price) || 0)}

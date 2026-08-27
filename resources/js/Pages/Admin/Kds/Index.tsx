@@ -32,7 +32,9 @@ export default function KdsIndex({
     branches,
     selectedBranchId,
     isSuperAdmin,
+    locale = 'pl',
 }: KdsIndexProps) {
+    const currentLocale = (locale as any) || 'pl';
     const [orders, setOrders] = useState<Order[]>(initialOrders);
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [receiptText, setReceiptText] = useState<string | null>(null);
@@ -251,7 +253,7 @@ export default function KdsIndex({
                                                 <div key={i} className="p-2.5 rounded-xl bg-neutral-950/80 border border-neutral-800/80 space-y-1">
                                                     <div className="flex justify-between text-xs font-bold text-white">
                                                         <span className="text-amber-300">
-                                                            {item.quantity}x {getLocalizedText(item.product_name, 'pl')}
+                                                            {item.quantity}x {getLocalizedText(item.product_name, currentLocale)}
                                                         </span>
                                                     </div>
 
@@ -344,7 +346,7 @@ export default function KdsIndex({
                                             {(order.items || []).map((item, i) => (
                                                 <div key={i} className="p-2.5 rounded-xl bg-neutral-950/80 border border-neutral-800 space-y-1">
                                                     <div className="text-xs font-bold text-amber-300">
-                                                        {item.quantity}x {getLocalizedText(item.product_name, 'pl')}
+                                                        {item.quantity}x {getLocalizedText(item.product_name, currentLocale)}
                                                     </div>
                                                     {item.selected_modifiers && item.selected_modifiers.length > 0 && (
                                                         <div className="text-[11px] text-neutral-300">

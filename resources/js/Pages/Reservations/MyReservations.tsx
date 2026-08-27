@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { AppLayout } from '../../Layouts/AppLayout';
 import { Reservation, PageProps } from '../../types';
 import { Calendar, ArrowRight, MapPin, Users, Clock } from 'lucide-react';
+import { translations, Locale } from '../../lib/i18n';
 
 interface MyReservationsProps extends PageProps {
     reservations: {
@@ -11,36 +12,39 @@ interface MyReservationsProps extends PageProps {
     };
 }
 
-export default function MyReservations({ reservations }: MyReservationsProps) {
+export default function MyReservations({ reservations, locale = 'pl' }: MyReservationsProps) {
+    const currentLocale = (locale as Locale) || 'pl';
+    const t = translations[currentLocale] || translations.pl;
+
     return (
         <AppLayout>
-            <Head title="Moje Rezerwacje — Aladen Kebab" />
+            <Head title={`${t.myReservationsTitle} — ${t.brandName}`} />
 
             <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-6">
                 <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-black text-white">Moje Rezerwacje</h1>
-                        <p className="text-xs text-neutral-400 mt-1">Lista Twoich rezerwacji stolików</p>
+                        <h1 className="text-2xl sm:text-3xl font-black text-white">{t.myReservationsTitle}</h1>
+                        <p className="text-xs text-neutral-400 mt-1">{t.myReservationsSubtitle}</p>
                     </div>
 
                     <Link
                         href={route('reservations.create')}
                         className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs shadow-md"
                     >
-                        + Nowa Rezerwacja
+                        {t.newReservationBtn}
                     </Link>
                 </div>
 
                 {reservations.data.length === 0 ? (
                     <div className="py-20 text-center space-y-3 bg-neutral-900 border border-neutral-800 rounded-3xl p-8">
                         <Calendar className="w-12 h-12 text-neutral-600 mx-auto" />
-                        <h3 className="text-base font-bold text-white">Brak zarezerwowanych stolików</h3>
-                        <p className="text-xs text-neutral-400">Zarezerwuj stolik na obiad lub spotkanie ze znajomymi!</p>
+                        <h3 className="text-base font-bold text-white">{t.noReservations}</h3>
+                        <p className="text-xs text-neutral-400">{t.noReservationsSub}</p>
                         <Link
                             href={route('reservations.create')}
                             className="inline-block mt-3 px-5 py-2.5 rounded-xl bg-amber-500 text-black font-bold text-xs"
                         >
-                            Zarezerwuj teraz
+                            {t.bookNow}
                         </Link>
                     </div>
                 ) : (
@@ -62,12 +66,12 @@ export default function MyReservations({ reservations }: MyReservationsProps) {
                                                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                                                     : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                                             }`}>
-                                                {res.status === 'confirmed' ? 'Potwierdzona' : 'Oczekuje'}
+                                                {res.status === 'confirmed' ? t.statusConfirmed : t.statusPending}
                                             </span>
                                         </div>
 
                                         <div className="text-sm font-bold text-white">
-                                            {res.branch?.name || 'Filia Aladen'}
+                                            {res.branch?.name || t.brandName}
                                         </div>
 
                                         <div className="flex flex-wrap gap-4 text-xs text-neutral-400">
@@ -81,7 +85,7 @@ export default function MyReservations({ reservations }: MyReservationsProps) {
                                             </span>
                                             <span className="flex items-center gap-1 text-neutral-300">
                                                 <Users className="w-3.5 h-3.5 text-amber-400" />
-                                                {res.guests_count} osoby
+                                                {res.guests_count} {t.guestsSuffix}
                                             </span>
                                         </div>
                                     </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Flame, Plus, Minus, Check, AlertCircle, ShoppingBag, Sparkles } from 'lucide-react';
 import { Product, ModifierGroup, ModifierOption, SelectedModifier } from '../types';
 import { useCartStore } from '../stores/cartStore';
-import { getLocalizedText, formatPrice, Locale } from '../lib/i18n';
+import { getLocalizedText, formatPrice, Locale, translations } from '../lib/i18n';
 import { usePage } from '@inertiajs/react';
 import { PageProps } from '../types';
 
@@ -14,6 +14,7 @@ interface ProductCustomizerModalProps {
 export const ProductCustomizerModal: React.FC<ProductCustomizerModalProps> = ({ product, onClose }) => {
     const { locale = 'pl' } = usePage<PageProps>().props;
     const currentLocale = (locale as Locale) || 'pl';
+    const t = translations[currentLocale] || translations.pl;
     const { addItem } = useCartStore();
 
     const [quantity, setQuantity] = useState(1);
@@ -116,13 +117,30 @@ export const ProductCustomizerModal: React.FC<ProductCustomizerModalProps> = ({ 
         for (const group of modifierGroups) {
             const selected = selectedOptionIds[group.id] || [];
             if (group.is_required && selected.length < (group.min_selection || 1)) {
-                setValidationError(`Proszę dokonać wyboru w sekcji: "${getLocalizedText(group.name, currentLocale)}"`);
+                setValidationError(
+                    t.pleaseMakeSelectionIn.replace('{group}', getLocalizedText(group.name, currentLocale))
+                );
                 return;
             }
         }
 
         addItem(product, quantity, flatSelectedModifiers, itemNotes.trim() || undefined);
         onClose();
+    };
+
+    // Get localized badge
+    const getBadgeLabel = (badge: string | null | undefined) => {
+        if (!badge) return null;
+        if (badge === 'Bestseller') return t.bestseller;
+        if (badge === 'Polecamy') return t.recommended;
+        if (badge === 'Szef Poleca') return t.chefSpecial;
+        if (badge === 'Klasyk') return t.classic;
+        if (badge === 'Świeże') return t.fresh;
+        if (badge === 'Oryginalny') return t.original;
+        if (badge === 'Dla Grupy') return t.forGroup;
+        if (badge === 'Ostre 🔥' || badge === 'Ostre') return t.spicyHot;
+        if (badge === 'Mega Hot') return t.spicyMega;
+        return badge;
     };
 
     return (
@@ -156,18 +174,18 @@ export const ProductCustomizerModal: React.FC<ProductCustomizerModalProps> = ({ 
                         <div className="flex flex-wrap items-center gap-2 mb-1.5">
                             {product.badge && (
                                 <span className="px-2.5 py-0.5 rounded-md bg-gradient-to-r from-red-600 to-amber-500 text-white font-black text-xs uppercase tracking-wider shadow-md">
-                                    {product.badge}
+                                    {getBadgeLabel(product.badge)}
                                 </span>
                             )}
                             {product.spiciness_level > 0 && (
                                 <span className="px-2 py-0.5 rounded-md bg-red-950/80 border border-red-500 text-red-400 font-bold text-xs flex items-center gap-1">
                                     <Flame className="w-3.5 h-3.5 text-red-500 fill-red-500" />
-                                    {product.spiciness_level === 1 ? 'Łagodne' : product.spiciness_level === 2 ? 'Pikantne 🔥' : 'Mega Ogień 🔥🔥'}
+                                    {product.spiciness_level === 1 ? t.spicyMild : product.spiciness_level === 2 ? t.spicyHot : t.spicyMega}
                                 </span>
                             )}
                             {product.is_vegetarian && (
                                 <span className="px-2 py-0.5 rounded-md bg-emerald-950/80 border border-emerald-500 text-emerald-400 font-bold text-xs">
-                                    Wegetariańskie 🌱
+                                    {t.vegetarian} 🌱
                                 </span>
                             )}
                         </div>
@@ -207,14 +225,14 @@ export const ProductCustomizerModal: React.FC<ProductCustomizerModalProps> = ({ 
                                         </span>
                                         {group.is_required && (
                                             <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 border border-red-500/30">
-                                                Wymagane
+                                                {t.required}
                                             </span>
                                         )}
                                     </div>
                                     <span className="text-[11px] text-neutral-400">
                                         {isSingle
-                                            ? 'Wybierz 1 opcję'
-                                            : `Wybierz max. ${group.max_selection || 'dowolnie'}`}
+                                            ? t.choose1Option
+                                            : t.chooseMaxOptions.replace('{max}', String(group.max_selection || t.chooseAny))}
                                     </span>
                                 </div>
 
@@ -246,7 +264,7 @@ export const ProductCustomizerModal: React.FC<ProductCustomizerModalProps> = ({ 
                                                             +{formatPrice(priceMod)}
                                                         </div>
                                                     ) : (
-                                                        <div className="text-[10px] text-neutral-400">w cenie</div>
+                                                        <div className="text-[10px] text-neutral-400">{t.includedInPrice}</div>
                                                     )}
                                                 </div>
 
@@ -270,12 +288,12 @@ export const ProductCustomizerModal: React.FC<ProductCustomizerModalProps> = ({ 
                     {/* Special Instructions Note */}
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-neutral-300">
-                            Uwagi specjalne do tego dania (np. bez cebuli, sos osobno):
+                            {t.specialNotesLabel}
                         </label>
                         <textarea
                             value={itemNotes}
                             onChange={(e) => setItemNotes(e.target.value)}
-                            placeholder="Wpisz ewentualne instrukcje dla kucharza..."
+                            placeholder={t.specialNotesPlaceholder}
                             rows={2}
                             className="w-full bg-neutral-800/80 border border-neutral-700 rounded-xl p-3 text-xs text-white placeholder-neutral-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
                         />
@@ -311,7 +329,7 @@ export const ProductCustomizerModal: React.FC<ProductCustomizerModalProps> = ({ 
                     >
                         <span className="flex items-center gap-2">
                             <ShoppingBag className="w-5 h-5" />
-                            <span>Dodaj do zamówienia</span>
+                            <span>{t.addToOrder}</span>
                         </span>
                         <span className="font-black tracking-wide text-yellow-200">
                             {formatPrice(calculatedTotal)}

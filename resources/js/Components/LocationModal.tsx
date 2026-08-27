@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { MapPin, Navigation, X, Check, Clock, AlertCircle, Sparkles } from 'lucide-react';
-import { Branch } from '../types';
+import { Branch, PageProps } from '../types';
 import { useLocationStore } from '../stores/locationStore';
+import { translations, Locale } from '../lib/i18n';
 import axios from 'axios';
 
 interface LocationModalProps {
@@ -11,6 +12,10 @@ interface LocationModalProps {
 }
 
 export const LocationModal: React.FC<LocationModalProps> = ({ branches, selectedBranch }) => {
+    const { locale = 'pl' } = usePage<PageProps>().props;
+    const currentLocale = (locale as Locale) || 'pl';
+    const t = translations[currentLocale] || translations.pl;
+
     const {
         isLocationModalOpen,
         setLocationModalOpen,
@@ -35,7 +40,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({ branches, selected
 
     const handleDetectLocation = () => {
         if (!navigator.geolocation) {
-            setErrorMsg('Twoja przeglądarka nie obsługuje geolokalizacji.');
+            setErrorMsg(t.gpsErrorNotSupported);
             return;
         }
 
@@ -52,7 +57,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({ branches, selected
                     });
                     setNearestResult(response.data);
                 } catch (err: any) {
-                    setErrorMsg('Nie udało się ustalić najbliższego lokalu dla Twojej pozycji.');
+                    setErrorMsg(t.gpsErrorNotFound);
                 } finally {
                     setIsLocating(false);
                 }
@@ -60,9 +65,9 @@ export const LocationModal: React.FC<LocationModalProps> = ({ branches, selected
             (error) => {
                 setIsLocating(false);
                 if (error.code === error.PERMISSION_DENIED) {
-                    setErrorMsg('Brak zgody na udostępnienie lokalizacji w przeglądarce.');
+                    setErrorMsg(t.gpsErrorDenied);
                 } else {
-                    setErrorMsg('Wystąpił błąd podczas pobierania lokalizacji.');
+                    setErrorMsg(t.gpsErrorGeneral);
                 }
             },
             { timeout: 10000 }
@@ -85,9 +90,9 @@ export const LocationModal: React.FC<LocationModalProps> = ({ branches, selected
                         <MapPin className="w-5 h-5" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black text-white">Wybierz swój lokal Aladen</h3>
+                        <h3 className="text-xl font-black text-white">{t.chooseBranchModalTitle}</h3>
                         <p className="text-xs text-neutral-400">
-                            Wskaż restaurację, aby zobaczyć aktualną dostępność i czas realizacji
+                            {t.chooseBranchModalSubtitle}
                         </p>
                     </div>
                 </div>
@@ -99,7 +104,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({ branches, selected
                     className="w-full mb-5 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-600/25 transition-all disabled:opacity-50"
                 >
                     <Navigation className={`w-4 h-4 ${isLocating ? 'animate-spin' : ''}`} />
-                    <span>{isLocating ? 'Wyszukiwanie najbliższego lokalu...' : 'Użyj mojej lokalizacji GPS (Automatyczny wybór)'}</span>
+                    <span>{isLocating ? t.gpsSearching : t.gpsButton}</span>
                 </button>
 
                 {errorMsg && (
@@ -113,16 +118,16 @@ export const LocationModal: React.FC<LocationModalProps> = ({ branches, selected
                     <div className="mb-4 p-4 rounded-2xl bg-emerald-950/60 border border-emerald-600/60 text-xs text-emerald-200 animate-in fade-in">
                         <div className="font-bold text-sm text-emerald-300 flex items-center gap-1.5 mb-1">
                             <Sparkles className="w-4 h-4 text-emerald-400" />
-                            Najbliższy lokal: {nearestResult.nearest_branch.name} ({nearestResult.distance_km} km)
+                            {t.nearestBranch}: {nearestResult.nearest_branch.name} ({nearestResult.distance_km} km)
                         </div>
                         <div>
                             {nearestResult.is_deliverable ? (
                                 <span className="text-emerald-400">
-                                    ✓ Twój adres znajduje się w strefie dostawy! (Szacowany czas: ~{nearestResult.estimated_delivery_minutes} min)
+                                    {t.inDeliveryZone.replace('{minutes}', String(nearestResult.estimated_delivery_minutes))}
                                 </span>
                             ) : (
                                 <span className="text-amber-400">
-                                    ⚠️ Poza strefą bezpośredniej dostawy (dostępny odbiór osobisty na miejscu).
+                                    {t.outOfDeliveryZone}
                                 </span>
                             )}
                         </div>
@@ -130,7 +135,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({ branches, selected
                 )}
 
                 <div className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-2">
-                    Dostępne filie w Twojej okolicy:
+                    {t.availableBranches}
                 </div>
 
                 <div className="space-y-2.5 max-h-72 overflow-y-auto pr-1">
@@ -151,7 +156,7 @@ export const LocationModal: React.FC<LocationModalProps> = ({ branches, selected
                                         <span className="font-bold text-sm text-white truncate">{b.name}</span>
                                         {isSelected && (
                                             <span className="px-2 py-0.5 rounded-full bg-amber-500 text-neutral-950 font-black text-[10px] uppercase tracking-wider">
-                                                Aktywny
+                                                {t.active}
                                             </span>
                                         )}
                                     </div>
@@ -160,11 +165,11 @@ export const LocationModal: React.FC<LocationModalProps> = ({ branches, selected
                                         <span>{b.address}, {b.city}</span>
                                     </div>
                                     <div className="flex items-center gap-3 text-[11px] text-amber-400/90 pt-0.5">
-                                        <span>Dostawa: min. {b.min_order_amount} zł</span>
+                                        <span>{t.minDelivery.replace('{amount}', String(b.min_order_amount))}</span>
                                         <span>•</span>
-                                        <span>Opłata: {b.delivery_fee} zł</span>
+                                        <span>{t.deliveryFeeLabel.replace('{fee}', String(b.delivery_fee))}</span>
                                         <span>•</span>
-                                        <span>Zasięg: {b.delivery_radius_km} km</span>
+                                        <span>{t.deliveryRadiusLabel.replace('{radius}', String(b.delivery_radius_km))}</span>
                                     </div>
                                 </div>
 

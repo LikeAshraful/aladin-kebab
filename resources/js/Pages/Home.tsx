@@ -17,7 +17,7 @@ import {
     Utensils, 
     Phone
 } from 'lucide-react';
-import { getLocalizedText, Locale } from '../lib/i18n';
+import { getLocalizedText, translations, Locale, t } from '../lib/i18n';
 import { useCartStore } from '../stores/cartStore';
 import { useLocationStore } from '../stores/locationStore';
 
@@ -29,6 +29,8 @@ interface HomeProps extends PageProps {
 
 export default function Home({ branches, selectedBranch, categories, locale = 'pl' }: HomeProps) {
     const currentLocale = (locale as Locale) || 'pl';
+    const tr = translations[currentLocale] || translations.pl;
+
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [activeCategorySlug, setActiveCategorySlug] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
@@ -67,7 +69,7 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
 
     return (
         <AppLayout branches={branches} selectedBranch={selectedBranch}>
-            <Head title="Aladen Spicy Kebab — Autentyczny Kebab, Dania z Grilla i Rezerwacje" />
+            <Head title={`${tr.brandName} — ${tr.brandTagline}`} />
 
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-neutral-950 py-12 lg:py-20 border-b border-neutral-800">
@@ -80,18 +82,18 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                         <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
                             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/10 border border-red-500/30 text-amber-400 font-bold text-xs">
                                 <Flame className="w-4 h-4 text-red-500 fill-red-500 animate-pulse" />
-                                <span>100% Soczyste Mięso • Sosy Mega Ostry Reaper & Czosnek</span>
+                                <span>{tr.heroBadge}</span>
                             </div>
 
                             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
-                                PRAWDZIWY KEBAB <br />
+                                {tr.heroTitle1} <br />
                                 <span className="bg-gradient-to-r from-red-500 via-orange-500 to-amber-400 bg-clip-text text-transparent">
-                                    PEŁEN CHARAKTERU & OGNIA
+                                    {tr.heroTitle2}
                                 </span>
                             </h1>
 
                             <p className="text-neutral-300 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                                Wybierz ulubiony rozmiar ciasta, kompozycję soczystego mięsa, autorskie sosy i dodatki. Dostarczamy gorące prosto z rusztu w Będzinie, Sosnowcu, Katowicach i okolicach!
+                                {tr.heroDesc}
                             </p>
 
                             {/* CTAs */}
@@ -104,7 +106,7 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                                     }}
                                     className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 via-amber-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-extrabold text-sm shadow-xl shadow-red-600/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
                                 >
-                                    <span>Zamów z Dostawą</span>
+                                    <span>{tr.orderDeliveryBtn}</span>
                                     <ArrowRight className="w-4 h-4" />
                                 </button>
 
@@ -113,7 +115,7 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                                     className="px-6 py-3.5 rounded-2xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-200 hover:text-white font-bold text-sm transition-all flex items-center gap-2"
                                 >
                                     <Calendar className="w-4 h-4 text-amber-400" />
-                                    <span>Rezerwuj Stolik</span>
+                                    <span>{tr.bookTableBtn}</span>
                                 </Link>
 
                                 <button
@@ -121,7 +123,7 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                                     className="px-4 py-3.5 rounded-2xl bg-neutral-900/60 hover:bg-neutral-800 border border-neutral-800 text-xs font-semibold text-neutral-400 hover:text-neutral-200 transition-colors flex items-center gap-1.5"
                                 >
                                     <MapPin className="w-4 h-4 text-neutral-400" />
-                                    <span>Filie ({branches.length})</span>
+                                    <span>{tr.branchesBtn.replace('{count}', String(branches.length))}</span>
                                 </button>
                             </div>
 
@@ -129,15 +131,15 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                             <div className="grid grid-cols-3 gap-3 pt-4 border-t border-neutral-800/80 max-w-lg mx-auto lg:mx-0 text-left">
                                 <div className="space-y-0.5">
                                     <div className="text-base font-black text-amber-400">~35 min</div>
-                                    <div className="text-[11px] text-neutral-400">Szybka dostawa</div>
+                                    <div className="text-[11px] text-neutral-400">{tr.fastDelivery}</div>
                                 </div>
                                 <div className="space-y-0.5">
                                     <div className="text-base font-black text-amber-400">55 cm</div>
-                                    <div className="text-[11px] text-neutral-400">Special Mega Gigant</div>
+                                    <div className="text-[11px] text-neutral-400">{tr.specialGiant}</div>
                                 </div>
                                 <div className="space-y-0.5">
-                                    <div className="text-base font-black text-amber-400">5 Filii</div>
-                                    <div className="text-[11px] text-neutral-400">Śląsk & Zagłębie</div>
+                                    <div className="text-base font-black text-amber-400">{branches.length} {tr.branchesBtn.replace(' ({count})', '')}</div>
+                                    <div className="text-[11px] text-neutral-400">{tr.region}</div>
                                 </div>
                             </div>
                         </div>
@@ -156,14 +158,14 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                                     <div className="absolute bottom-4 left-4 right-4 text-white">
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className="px-2.5 py-0.5 rounded-md bg-red-600 text-white text-[10px] font-black uppercase">
-                                                Polecamy
+                                                {tr.featuredTag}
                                             </span>
                                             <span className="text-xs text-amber-300 font-bold">
-                                                Rollo Kebab Klasyczny (Super 45cm)
+                                                {tr.featuredTitle}
                                             </span>
                                         </div>
                                         <p className="text-xs text-neutral-300">
-                                            Chrupiący lawasz, soczysta wołowina i autorski sos ostry Reaper.
+                                            {tr.featuredDesc}
                                         </p>
                                     </div>
                                 </div>
@@ -180,15 +182,15 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <h2 className="text-2xl sm:text-3xl font-black text-white">
-                                Menu & Zamówienia Online
+                                {tr.menuTitle}
                             </h2>
                             <p className="text-xs text-neutral-400 mt-1">
                                 {selectedBranch ? (
                                     <span>
-                                        Zamawiasz z: <strong className="text-amber-400">{selectedBranch.name}</strong> ({selectedBranch.address}, {selectedBranch.city})
+                                        {tr.orderingFrom} <strong className="text-amber-400">{selectedBranch.name}</strong> ({selectedBranch.address}, {selectedBranch.city})
                                     </span>
                                 ) : (
-                                    'Wybierz filię, aby rozpocząć'
+                                    tr.selectBranchToStart
                                 )}
                             </p>
                         </div>
@@ -200,7 +202,7 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Szukaj w menu..."
+                                placeholder={tr.searchPlaceholder}
                                 className="w-full bg-neutral-900 border border-neutral-700 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-neutral-500 focus:ring-2 focus:ring-amber-500 outline-none"
                             />
                             {searchQuery && (
@@ -225,7 +227,7 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                             }`}
                         >
                             <Flame className="w-3.5 h-3.5" />
-                            <span>Tylko Pikantne 🔥</span>
+                            <span>{tr.spicyOnly}</span>
                         </button>
 
                         <button
@@ -237,7 +239,7 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                             }`}
                         >
                             <Leaf className="w-3.5 h-3.5" />
-                            <span>Tylko Wegetariańskie 🌱</span>
+                            <span>{tr.vegeOnly}</span>
                         </button>
                     </div>
 
@@ -251,7 +253,7 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                                     : 'bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-800'
                             }`}
                         >
-                            Wszystkie ({categories.reduce((s, c) => s + (c.products?.length || 0), 0)})
+                            {tr.allCategories} ({categories.reduce((s, c) => s + (c.products?.length || 0), 0)})
                         </button>
 
                         {categories.map((cat) => (
@@ -279,8 +281,8 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                         <div className="w-16 h-16 rounded-full bg-neutral-900 flex items-center justify-center mx-auto text-neutral-600">
                             <Utensils className="w-8 h-8" />
                         </div>
-                        <h3 className="text-lg font-bold text-white">Brak dań spełniających kryteria</h3>
-                        <p className="text-xs text-neutral-400">Spróbuj zmienić słowo wyszukiwania lub filtry.</p>
+                        <h3 className="text-lg font-bold text-white">{tr.noDishesFound}</h3>
+                        <p className="text-xs text-neutral-400">{tr.noDishesSub}</p>
                     </div>
                 ) : (
                     <div className="space-y-12">
@@ -298,7 +300,7 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                                         )}
                                     </div>
                                     <span className="text-xs font-bold text-neutral-500">
-                                        {(cat.filteredProducts || []).length} pozycji
+                                        {tr.itemsCount.replace('{count}', String((cat.filteredProducts || []).length))}
                                     </span>
                                 </div>
 
@@ -326,15 +328,15 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                             <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
                                 <Calendar className="w-6 h-6" />
                             </div>
-                            <h3 className="text-2xl font-black text-white">Rezerwacja Stolika</h3>
+                            <h3 className="text-2xl font-black text-white">{tr.promoReservationTitle}</h3>
                             <p className="text-xs text-neutral-400 leading-relaxed">
-                                Planujesz spotkanie ze znajomymi lub uroczystość rodzinną? Zarezerwuj stolik online w dowolnej z naszych 5 filii. Potwierdzenie otrzymasz błyskawicznie!
+                                {tr.promoReservationDesc}
                             </p>
                             <Link
                                 href={route('reservations.create')}
                                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs transition-colors shadow-lg shadow-amber-500/20"
                             >
-                                <span>Przejdź do rezerwacji</span>
+                                <span>{tr.promoReservationBtn}</span>
                                 <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>
@@ -344,15 +346,15 @@ export default function Home({ branches, selectedBranch, categories, locale = 'p
                             <div className="w-12 h-12 rounded-2xl bg-red-600/20 text-red-400 flex items-center justify-center">
                                 <MapPin className="w-6 h-6" />
                             </div>
-                            <h3 className="text-2xl font-black text-white">Zasięg Naszych Kuchni</h3>
+                            <h3 className="text-2xl font-black text-white">{tr.promoKitchenTitle}</h3>
                             <p className="text-xs text-neutral-400 leading-relaxed">
-                                Posiadamy 5 nowoczesnych kuchni (Będzin, Sosnowiec, Dąbrowa Górnicza, Katowice, Czeladź). Sprawdź najbliższą filię i ciesz się gorącym posiłkiem w kilkadziesiąt minut!
+                                {tr.promoKitchenDesc}
                             </p>
                             <button
                                 onClick={() => setLocationModalOpen(true)}
                                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs transition-colors"
                             >
-                                <span>Wybierz lub wykryj filię</span>
+                                <span>{tr.promoKitchenBtn}</span>
                                 <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>

@@ -18,7 +18,7 @@ import {
     Lock
 } from 'lucide-react';
 import { useCartStore } from '../stores/cartStore';
-import { formatPrice, getLocalizedText, Locale } from '../lib/i18n';
+import { formatPrice, getLocalizedText, Locale, translations } from '../lib/i18n';
 import { PageProps, Branch } from '../types';
 import confetti from 'canvas-confetti';
 
@@ -30,6 +30,7 @@ interface CartDrawerProps {
 export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch }) => {
     const { locale = 'pl' } = usePage<PageProps>().props;
     const currentLocale = (locale as Locale) || 'pl';
+    const t = translations[currentLocale] || translations.pl;
 
     const {
         items,
@@ -83,29 +84,29 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
         const errors: Record<string, string> = {};
 
         if (!customerInfo.name.trim()) {
-            errors.name = 'Proszę podać imię i nazwisko.';
+            errors.name = t.errorName;
         }
         if (!customerInfo.phone.trim() || customerInfo.phone.length < 8) {
-            errors.phone = 'Proszę podać prawidłowy numer telefonu.';
+            errors.phone = t.errorPhone;
         }
 
         if (orderType === 'delivery') {
             if (!deliveryAddress.street.trim()) {
-                errors.street = 'Proszę podać ulicę.';
+                errors.street = t.errorStreet;
             }
             if (!deliveryAddress.building_number.trim()) {
-                errors.building = 'Proszę podać nr budynku.';
+                errors.building = t.errorBuilding;
             }
             if (!deliveryAddress.city.trim()) {
-                errors.city = 'Proszę podać miasto.';
+                errors.city = t.errorCity;
             }
             if (isUnderMinOrder) {
-                errors.minOrder = `Minimalna kwota zamówienia dla dostawy to ${minOrderAmount.toFixed(2)} zł.`;
+                errors.minOrder = t.errorMinOrder.replace('{amount}', minOrderAmount.toFixed(2));
             }
         }
 
         if (orderType === 'dine_in' && !tableNumber.trim()) {
-            errors.table = 'Proszę podać numer stolika.';
+            errors.table = t.errorTable;
         }
 
         setFormErrors(errors);
@@ -202,9 +203,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                 <ShoppingBag className="w-5 h-5" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-black text-white">Twój Koszyk</h3>
+                                <h3 className="text-lg font-black text-white">{t.yourCart}</h3>
                                 <div className="text-xs text-neutral-400">
-                                    {selectedBranch ? selectedBranch.name : 'Wybierz filię'}
+                                    {selectedBranch ? selectedBranch.name : t.selectBranch}
                                 </div>
                             </div>
                         </div>
@@ -230,7 +231,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                         : 'text-neutral-400 hover:text-neutral-200'
                                 }`}
                             >
-                                🛵 Dostawa
+                                🛵 {t.delivery}
                             </button>
                             <button
                                 type="button"
@@ -241,7 +242,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                         : 'text-neutral-400 hover:text-neutral-200'
                                 }`}
                             >
-                                🛍️ Odbiór
+                                🛍️ {t.collection}
                             </button>
                             <button
                                 type="button"
@@ -252,7 +253,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                         : 'text-neutral-400 hover:text-neutral-200'
                                 }`}
                             >
-                                🍽️ Na miejscu
+                                🍽️ {t.dineIn}
                             </button>
                         </div>
 
@@ -263,8 +264,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                     <span className="flex items-center gap-1.5 text-amber-400">
                                         <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                                         {freeDeliveryDiff > 0
-                                            ? `Darmowa dostawa od ${freeDeliveryThreshold} zł (brakuje ${formatPrice(freeDeliveryDiff)})`
-                                            : '🎉 Otrzymujesz darmową dostawę!'}
+                                            ? t.freeDeliveryFrom.replace('{threshold}', String(freeDeliveryThreshold)).replace('{diff}', formatPrice(freeDeliveryDiff))
+                                            : t.freeDeliveryReached}
                                     </span>
                                     <span className="text-neutral-400">{freeDeliveryProgress}%</span>
                                 </div>
@@ -283,22 +284,22 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                 <div className="w-16 h-16 rounded-full bg-neutral-800/80 flex items-center justify-center mx-auto text-neutral-500">
                                     <ShoppingBag className="w-8 h-8" />
                                 </div>
-                                <h4 className="font-bold text-neutral-300">Twój koszyk jest pusty</h4>
+                                <h4 className="font-bold text-neutral-300">{t.emptyCart}</h4>
                                 <p className="text-xs text-neutral-500 max-w-xs mx-auto">
-                                    Dodaj wyśmienite kebaby lub potrawy z menu, aby kontynuować zamówienie.
+                                    {t.emptyCartSub}
                                 </p>
                             </div>
                         ) : (
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between text-xs font-bold text-neutral-400 uppercase tracking-wider">
-                                    <span>Wybrane pozycje ({itemCount})</span>
+                                    <span>{t.selectedItems.replace('{count}', String(itemCount))}</span>
                                     <button
                                         type="button"
                                         onClick={clearCart}
                                         className="text-red-400 hover:text-red-300 normal-case font-medium text-xs flex items-center gap-1"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" />
-                                        <span>Wyczyść</span>
+                                        <span>{t.clear}</span>
                                     </button>
                                 </div>
 
@@ -367,19 +368,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                         {items.length > 0 && (
                             <div className="space-y-4 pt-2 border-t border-neutral-800">
                                 <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
-                                    Dane do realizacji
+                                    {t.orderDetailsHeader}
                                 </h4>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div>
                                         <label className="text-[11px] font-semibold text-neutral-300 block mb-1">
-                                            Imię i nazwisko *
+                                            {t.fullNameRequired}
                                         </label>
                                         <input
                                             type="text"
                                             value={customerInfo.name}
                                             onChange={(e) => setCustomerInfo({ name: e.target.value })}
-                                            placeholder="Jan Kowalski"
+                                            placeholder={currentLocale === 'en' ? 'John Doe' : 'Jan Kowalski'}
                                             className="w-full bg-neutral-800/90 border border-neutral-700 rounded-xl p-2.5 text-xs text-white placeholder-neutral-500 focus:ring-2 focus:ring-amber-500 outline-none"
                                         />
                                         {formErrors.name && (
@@ -389,7 +390,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
 
                                     <div>
                                         <label className="text-[11px] font-semibold text-neutral-300 block mb-1">
-                                            Telefon komórkowy *
+                                            {t.phoneRequired}
                                         </label>
                                         <input
                                             type="tel"
@@ -409,7 +410,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                     <div className="p-3.5 rounded-2xl bg-neutral-950/80 border border-neutral-800 space-y-3">
                                         <div className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
                                             <MapPin className="w-4 h-4" />
-                                            <span>Adres doręczenia</span>
+                                            <span>{t.deliveryAddress}</span>
                                         </div>
 
                                         <div className="grid grid-cols-3 gap-2">
@@ -418,7 +419,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                                     type="text"
                                                     value={deliveryAddress.street}
                                                     onChange={(e) => setDeliveryAddress({ street: e.target.value })}
-                                                    placeholder="Ulica *"
+                                                    placeholder={t.streetRequired}
                                                     className="w-full bg-neutral-800 border border-neutral-700 rounded-xl p-2 text-xs text-white placeholder-neutral-500 outline-none"
                                                 />
                                             </div>
@@ -427,7 +428,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                                     type="text"
                                                     value={deliveryAddress.building_number}
                                                     onChange={(e) => setDeliveryAddress({ building_number: e.target.value })}
-                                                    placeholder="Nr budynku *"
+                                                    placeholder={t.buildingRequired}
                                                     className="w-full bg-neutral-800 border border-neutral-700 rounded-xl p-2 text-xs text-white placeholder-neutral-500 outline-none"
                                                 />
                                             </div>
@@ -439,7 +440,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                                     type="text"
                                                     value={deliveryAddress.apartment || ''}
                                                     onChange={(e) => setDeliveryAddress({ apartment: e.target.value })}
-                                                    placeholder="Nr lokalu"
+                                                    placeholder={t.apartmentOptional}
                                                     className="w-full bg-neutral-800 border border-neutral-700 rounded-xl p-2 text-xs text-white placeholder-neutral-500 outline-none"
                                                 />
                                             </div>
@@ -448,7 +449,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                                     type="text"
                                                     value={deliveryAddress.city}
                                                     onChange={(e) => setDeliveryAddress({ city: e.target.value })}
-                                                    placeholder="Miasto *"
+                                                    placeholder={t.cityRequired}
                                                     className="w-full bg-neutral-800 border border-neutral-700 rounded-xl p-2 text-xs text-white placeholder-neutral-500 outline-none"
                                                 />
                                             </div>
@@ -457,7 +458,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                                     type="text"
                                                     value={deliveryAddress.door_code || ''}
                                                     onChange={(e) => setDeliveryAddress({ door_code: e.target.value })}
-                                                    placeholder="Domofon #"
+                                                    placeholder={t.doorCodeOptional}
                                                     className="w-full bg-neutral-800 border border-neutral-700 rounded-xl p-2 text-xs text-white placeholder-neutral-500 outline-none"
                                                 />
                                             </div>
@@ -469,13 +470,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                 {orderType === 'dine_in' && (
                                     <div className="p-3.5 rounded-2xl bg-neutral-950/80 border border-neutral-800">
                                         <label className="text-xs font-semibold text-neutral-300 block mb-1">
-                                            Numer stolika *
+                                            {t.tableNumberRequired}
                                         </label>
                                         <input
                                             type="text"
                                             value={tableNumber}
                                             onChange={(e) => setTableNumber(e.target.value)}
-                                            placeholder="np. Stół 5, Ogródek 2"
+                                            placeholder={t.tableNumberPlaceholder}
                                             className="w-full bg-neutral-800 border border-neutral-700 rounded-xl p-2.5 text-xs text-white placeholder-neutral-500 outline-none"
                                         />
                                     </div>
@@ -484,7 +485,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                 {/* Payment Method Selector */}
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-neutral-300 block">
-                                        Metoda płatności
+                                        {t.paymentMethod}
                                     </label>
                                     <div className="grid grid-cols-2 gap-2">
                                         <button
@@ -499,7 +500,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                             <span className="w-5 h-5 rounded bg-black text-amber-400 text-[9px] font-black flex items-center justify-center">
                                                 BLIK
                                             </span>
-                                            <span>BLIK online</span>
+                                            <span>{t.blikOnline}</span>
                                         </button>
 
                                         <button
@@ -512,7 +513,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                             }`}
                                         >
                                             <CreditCard className="w-4 h-4 text-emerald-400" />
-                                            <span>Karta / PayU</span>
+                                            <span>{t.cardPayU}</span>
                                         </button>
 
                                         <button
@@ -524,7 +525,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                                     : 'bg-neutral-800 border-neutral-700 text-neutral-300'
                                             }`}
                                         >
-                                            <span>💵 Gotówka</span>
+                                            <span>{t.cash}</span>
                                         </button>
 
                                         <button
@@ -536,7 +537,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                                     : 'bg-neutral-800 border-neutral-700 text-neutral-300'
                                             }`}
                                         >
-                                            <span>💳 {orderType === 'dine_in' ? 'Przy kasie' : 'Karta u kuriera'}</span>
+                                            <span>{orderType === 'dine_in' ? t.atCounter : t.cardWithCourier}</span>
                                         </button>
                                     </div>
                                 </div>
@@ -544,12 +545,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                 {/* Order Notes */}
                                 <div>
                                     <label className="text-[11px] font-semibold text-neutral-400 block mb-1">
-                                        Uwagi do zamówienia (opcjonalnie):
+                                        {t.orderNotesLabel}
                                     </label>
                                     <textarea
                                         value={customerNotes}
                                         onChange={(e) => setCustomerNotes(e.target.value)}
-                                        placeholder="np. proszę o dodatkowe serwetki..."
+                                        placeholder={t.orderNotesPlaceholder}
                                         rows={2}
                                         className="w-full bg-neutral-800 border border-neutral-700 rounded-xl p-2 text-xs text-white placeholder-neutral-500 outline-none"
                                     />
@@ -563,15 +564,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                         <div className="p-5 bg-neutral-950 border-t border-neutral-800 space-y-3 shrink-0">
                             <div className="space-y-1.5 text-xs text-neutral-400">
                                 <div className="flex justify-between">
-                                    <span>Wartość dań:</span>
+                                    <span>{t.subtotal}:</span>
                                     <span className="text-white font-semibold">{formatPrice(subtotal)}</span>
                                 </div>
                                 {orderType === 'delivery' && (
                                     <div className="flex justify-between">
-                                        <span>Dostawa:</span>
+                                        <span>{t.deliveryFee}:</span>
                                         <span className="text-white font-semibold">
                                             {deliveryFee === 0 ? (
-                                                <span className="text-emerald-400 font-bold">GRATIS</span>
+                                                <span className="text-emerald-400 font-bold">{t.free}</span>
                                             ) : (
                                                 formatPrice(deliveryFee)
                                             )}
@@ -579,7 +580,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                     </div>
                                 )}
                                 <div className="flex justify-between text-base font-black text-white pt-2 border-t border-neutral-800">
-                                    <span>Razem do zapłaty:</span>
+                                    <span>{t.total}:</span>
                                     <span className="text-amber-400 text-lg">{formatPrice(total)}</span>
                                 </div>
                             </div>
@@ -588,7 +589,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                             {isUnderMinOrder && (
                                 <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-800 text-[11px] text-red-200 flex items-center gap-2">
                                     <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-                                    <span>Minimalna kwota dla dostawy to {minOrderAmount} zł (brakuje {formatPrice(minOrderDiff)}).</span>
+                                    <span>{t.minOrderWarning.replace('{min}', String(minOrderAmount)).replace('{diff}', formatPrice(minOrderDiff))}</span>
                                 </div>
                             )}
 
@@ -601,7 +602,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                             >
                                 <span className="flex items-center gap-2">
                                     <Lock className="w-4 h-4 text-amber-200" />
-                                    <span>{isSubmitting ? 'Przetwarzanie...' : 'Złóż zamówienie'}</span>
+                                    <span>{isSubmitting ? t.processing : t.placeOrderBtn}</span>
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <span>{formatPrice(total)}</span>
@@ -622,9 +623,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                         </div>
 
                         <div>
-                            <h4 className="text-lg font-black text-white">Płatność BLIK</h4>
+                            <h4 className="text-lg font-black text-white">{t.blikModalTitle}</h4>
                             <p className="text-xs text-neutral-400 mt-1">
-                                Wpisz 6-cyfrowy kod wygenerowany w Twojej aplikacji bankowej:
+                                {t.blikModalDesc}
                             </p>
                         </div>
 
@@ -645,7 +646,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                         onClick={() => setIsBlikModalOpen(false)}
                                         className="flex-1 py-3 rounded-xl bg-neutral-800 text-neutral-300 font-bold text-xs hover:bg-neutral-700"
                                     >
-                                        Anuluj
+                                        {t.blikCancel}
                                     </button>
                                     <button
                                         type="button"
@@ -653,7 +654,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                                         onClick={handleBlikConfirm}
                                         className="flex-1 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs disabled:opacity-40 transition-colors shadow-lg"
                                     >
-                                        Zapłać {formatPrice(total)}
+                                        {t.blikPayBtn.replace('{amount}', formatPrice(total))}
                                     </button>
                                 </div>
                             </div>
@@ -662,9 +663,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                         {blikStatus === 'waiting' && (
                             <div className="py-6 space-y-3">
                                 <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
-                                <div className="text-sm font-bold text-amber-400">Oczekiwanie na potwierdzenie...</div>
+                                <div className="text-sm font-bold text-amber-400">{t.blikWaiting}</div>
                                 <div className="text-xs text-neutral-400">
-                                    Zaakceptuj transakcję w aplikacji swojego banku na telefonie.
+                                    {t.blikWaitingSub}
                                 </div>
                             </div>
                         )}
@@ -672,8 +673,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ branches, selectedBranch
                         {blikStatus === 'confirmed' && (
                             <div className="py-6 space-y-3">
                                 <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto animate-bounce" />
-                                <div className="text-base font-black text-emerald-400">Płatność potwierdzona!</div>
-                                <div className="text-xs text-neutral-400">Zapisywanie zamówienia...</div>
+                                <div className="text-base font-black text-emerald-400">{t.blikConfirmed}</div>
+                                <div className="text-xs text-neutral-400">{t.blikSaving}</div>
                             </div>
                         )}
                     </div>

@@ -38,7 +38,9 @@ export default function OrdersIndex({
     branches,
     filters,
     isSuperAdmin,
+    locale = 'pl',
 }: OrdersIndexProps) {
+    const currentLocale = (locale as any) || 'pl';
     const [search, setSearch] = useState(filters.search || '');
     const [selectedBranchId, setSelectedBranchId] = useState(filters.branch_id || 'all');
     const [selectedStatus, setSelectedStatus] = useState(filters.status || 'all');
@@ -206,7 +208,7 @@ export default function OrdersIndex({
                                             <td className="p-4 max-w-xs space-y-1">
                                                 {(order.items || []).map((item, idx) => (
                                                     <div key={idx} className="text-[11px] text-neutral-300">
-                                                        <strong>{item.quantity}x</strong> {getLocalizedText(item.product_name, 'pl')}
+                                                        <strong>{item.quantity}x</strong> {getLocalizedText(item.product_name, currentLocale)}
                                                     </div>
                                                 ))}
                                             </td>

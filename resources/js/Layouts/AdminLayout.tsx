@@ -17,51 +17,54 @@ import {
     MapPin
 } from 'lucide-react';
 import { PageProps } from '../types';
+import { translations, Locale } from '../lib/i18n';
 
 interface AdminLayoutProps {
     title?: string;
 }
 
-export const AdminLayout: React.FC<PropsWithChildren<AdminLayoutProps>> = ({ children, title = 'Panel Administracyjny' }) => {
-    const { auth } = usePage<PageProps>().props;
+export const AdminLayout: React.FC<PropsWithChildren<AdminLayoutProps>> = ({ children, title }) => {
+    const { auth, locale = 'pl' } = usePage<PageProps>().props;
+    const currentLocale = (locale as Locale) || 'pl';
+    const t = translations[currentLocale] || translations.pl;
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const user = auth.user;
 
     const navItems = [
         {
-            name: 'Pulpit / Analityka',
+            name: t.adminNavDashboard,
             href: route('admin.dashboard'),
             active: route().current('admin.dashboard'),
             icon: LayoutDashboard,
         },
         {
-            name: 'System Kuchni (KDS)',
+            name: t.adminNavKds,
             href: route('admin.kds.index'),
             active: route().current('admin.kds.*'),
             icon: UtensilsCrossed,
             badge: 'Live',
         },
         {
-            name: 'Zamówienia & POS',
+            name: t.adminNavOrders,
             href: route('admin.orders.index'),
             active: route().current('admin.orders.*'),
             icon: ShoppingBag,
         },
         {
-            name: 'Rezerwacje Stolików',
+            name: t.adminNavReservations,
             href: route('admin.reservations.index'),
             active: route().current('admin.reservations.*'),
             icon: Calendar,
         },
         {
-            name: 'Magazyn Filii & Stany',
+            name: t.adminNavStock,
             href: route('admin.branches.stock'),
             active: route().current('admin.branches.*'),
             icon: Store,
         },
         {
-            name: 'Zarządzanie Menu',
+            name: t.adminNavMenu,
             href: route('admin.menu.index'),
             active: route().current('admin.menu.*'),
             icon: BookOpen,
@@ -143,7 +146,7 @@ export const AdminLayout: React.FC<PropsWithChildren<AdminLayoutProps>> = ({ chi
                         className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-neutral-800/80 hover:bg-neutral-800 text-neutral-300 hover:text-white text-xs font-semibold transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4 text-amber-400" />
-                        <span>Wróć do sklepu klienta</span>
+                        <span>{t.backToStore}</span>
                     </Link>
 
                     <div className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950 border border-neutral-800/80">
@@ -157,7 +160,7 @@ export const AdminLayout: React.FC<PropsWithChildren<AdminLayoutProps>> = ({ chi
                             method="post"
                             as="button"
                             className="p-2 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
-                            title="Wyloguj"
+                            title={t.logout}
                         >
                             <LogOut className="w-4 h-4" />
                         </Link>
@@ -176,16 +179,16 @@ export const AdminLayout: React.FC<PropsWithChildren<AdminLayoutProps>> = ({ chi
                         >
                             <Menu className="w-5 h-5" />
                         </button>
-                        <h1 className="text-base sm:text-lg font-black text-white">{title}</h1>
+                        <h1 className="text-base sm:text-lg font-black text-white">{title || t.adminPanel}</h1>
                     </div>
 
                     <div className="flex items-center gap-3">
                         <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-800 border border-neutral-700 text-xs text-neutral-300 font-semibold">
                             <MapPin className="w-3.5 h-3.5 text-amber-400" />
-                            <span>{user?.branch ? user.branch.name : 'Wszystkie Filie'}</span>
+                            <span>{user?.branch ? user.branch.name : (currentLocale === 'en' ? 'All Branches' : 'Wszystkie Filie')}</span>
                         </div>
 
-                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" title="System Live Reverb / Active" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" title="System Live" />
                     </div>
                 </header>
 

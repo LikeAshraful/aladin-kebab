@@ -63,7 +63,9 @@ export default function Dashboard({
     branches,
     selectedBranchId,
     isSuperAdmin,
+    locale = 'pl',
 }: DashboardProps) {
+    const currentLocale = (locale as any) || 'pl';
     const handleBranchFilter = (branchId: string) => {
         router.get(
             route('admin.dashboard'),
@@ -282,7 +284,7 @@ export default function Dashboard({
                                         </span>
                                         <div className="min-w-0">
                                             <div className="text-xs font-bold text-white truncate max-w-[140px]">
-                                                {getLocalizedText(item.product_name, 'pl')}
+                                                {getLocalizedText(item.product_name, currentLocale)}
                                             </div>
                                             <div className="text-[10px] text-neutral-400">
                                                 {item.total_qty} sprzedanych szt.

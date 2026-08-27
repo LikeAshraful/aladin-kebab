@@ -10,7 +10,8 @@ interface MenuIndexProps extends PageProps {
     modifierGroups: ModifierGroup[];
 }
 
-export default function MenuIndex({ categories, modifierGroups }: MenuIndexProps) {
+export default function MenuIndex({ categories, modifierGroups, locale = 'pl' }: MenuIndexProps) {
+    const currentLocale = (locale as any) || 'pl';
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [productForm, setProductForm] = useState({
         base_price: 0,
@@ -64,7 +65,7 @@ export default function MenuIndex({ categories, modifierGroups }: MenuIndexProps
                             <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
                                 <div>
                                     <h3 className="text-base font-black text-white flex items-center gap-2">
-                                        <span>{getLocalizedText(cat.name, 'pl')}</span>
+                                        <span>{getLocalizedText(cat.name, currentLocale)}</span>
                                         <span className="text-xs text-amber-400 font-mono">
                                             ({(cat.products || []).length} dań)
                                         </span>
@@ -80,7 +81,7 @@ export default function MenuIndex({ categories, modifierGroups }: MenuIndexProps
                                     >
                                         <div className="min-w-0 flex-1">
                                             <div className="text-xs font-bold text-white truncate">
-                                                {getLocalizedText(product.name, 'pl')}
+                                                {getLocalizedText(product.name, currentLocale)}
                                             </div>
                                             <div className="text-xs font-black text-amber-400 mt-0.5">
                                                 {formatPrice(Number(product.base_price) || 0)}
@@ -118,7 +119,7 @@ export default function MenuIndex({ categories, modifierGroups }: MenuIndexProps
                             <div key={group.id} className="p-5 rounded-2xl bg-neutral-950/80 border border-neutral-800 space-y-3">
                                 <div className="flex items-center justify-between">
                                     <div className="font-bold text-sm text-amber-400">
-                                        {getLocalizedText(group.name, 'pl')}
+                                        {getLocalizedText(group.name, currentLocale)}
                                     </div>
                                     <span className="text-[10px] text-neutral-400 uppercase font-bold">
                                         {group.selection_type === 'single' ? 'Pojedynczy' : 'Wielokrotny'}
@@ -132,7 +133,7 @@ export default function MenuIndex({ categories, modifierGroups }: MenuIndexProps
                                             className="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between text-xs"
                                         >
                                             <span className="text-neutral-200">
-                                                {getLocalizedText(opt.name, 'pl')}
+                                                {getLocalizedText(opt.name, currentLocale)}
                                             </span>
 
                                             {editingOption?.id === opt.id ? (
@@ -186,7 +187,7 @@ export default function MenuIndex({ categories, modifierGroups }: MenuIndexProps
                     >
                         <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
                             <h4 className="font-bold text-sm">
-                                Edycja: {getLocalizedText(editingProduct.name, 'pl')}
+                                Edycja: {getLocalizedText(editingProduct.name, currentLocale)}
                             </h4>
                             <button
                                 type="button"
