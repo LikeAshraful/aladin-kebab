@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Production PHP + Nginx Environment
-FROM php:8.2-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # Install system dependencies & PHP extensions for Laravel & PostgreSQL (Supabase)
 RUN apk add --no-cache \
