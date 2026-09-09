@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\AnalyticsService;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -27,6 +28,17 @@ class KdsAndAdminTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
 
         $response->assertStatus(200);
+    }
+
+    public function test_analytics_service_metrics_returns_top_items(): void
+    {
+        $analyticsService = app(AnalyticsService::class);
+        $metrics = $analyticsService->getMasterDashboardMetrics();
+
+        $this->assertArrayHasKey('top_items', $metrics);
+        $this->assertNotEmpty($metrics['top_items']);
+        $this->assertArrayHasKey('total_qty', $metrics['top_items'][0]);
+        $this->assertArrayHasKey('product_name', $metrics['top_items'][0]);
     }
 
     public function test_kds_feed_accessible_and_returns_orders(): void

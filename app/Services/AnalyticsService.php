@@ -61,9 +61,14 @@ class AnalyticsService
 
         // Top selling items
         $orderIds = (clone $ordersQuery)->pluck('id');
+        $castProductName = match (DB::getDriverName()) {
+            'mysql' => 'CAST(product_name AS CHAR)',
+            default => 'CAST(product_name AS TEXT)',
+        };
+
         $topItems = OrderItem::whereIn('order_id', $orderIds)
-            ->select('product_id', 'product_name', DB::raw('sum(quantity) as total_qty'), DB::raw('sum(total_price) as total_sales'))
-            ->groupBy('product_id', 'product_name')
+            ->select('product_id', DB::raw("{$castProductName} as product_name"), DB::raw('sum(quantity) as total_qty'), DB::raw('sum(total_price) as total_sales'))
+            ->groupBy('product_id', DB::raw($castProductName))
             ->orderByDesc('total_qty')
             ->limit(5)
             ->get();
