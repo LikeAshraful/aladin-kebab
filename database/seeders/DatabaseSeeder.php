@@ -886,5 +886,8 @@ class DatabaseSeeder extends Seeder
         foreach ($sampleReservations as $rData) {
             Reservation::create($rData);
         }
+
+        // 9. Seed System & Restaurant Settings
+        $this->call(SettingsSeeder::class);
     }
 }

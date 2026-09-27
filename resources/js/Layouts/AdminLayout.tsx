@@ -1,20 +1,22 @@
 import React, { PropsWithChildren, useState } from 'react';
-import { Link, usePage } from '@inertiajs/react';
-import { 
-    Flame, 
-    LayoutDashboard, 
-    UtensilsCrossed, 
-    ShoppingBag, 
-    Calendar, 
-    Store, 
-    BookOpen, 
-    ArrowLeft, 
-    LogOut, 
-    Menu, 
+import { Link, usePage, router } from '@inertiajs/react';
+import {
+    Flame,
+    LayoutDashboard,
+    UtensilsCrossed,
+    ShoppingBag,
+    Calendar,
+    Store,
+    BookOpen,
+    Settings,
+    ArrowLeft,
+    LogOut,
+    Menu,
     X,
     Bell,
     Shield,
-    MapPin
+    MapPin,
+    Globe
 } from 'lucide-react';
 import { PageProps } from '../types';
 import { translations, Locale } from '../lib/i18n';
@@ -30,6 +32,10 @@ export const AdminLayout: React.FC<PropsWithChildren<AdminLayoutProps>> = ({ chi
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const user = auth.user;
+
+    const switchLocale = (newLocale: string) => {
+        router.post(`/locale/${newLocale}`, {}, { preserveScroll: true });
+    };
 
     const navItems = [
         {
@@ -68,6 +74,13 @@ export const AdminLayout: React.FC<PropsWithChildren<AdminLayoutProps>> = ({ chi
             href: route('admin.menu.index'),
             active: route().current('admin.menu.*'),
             icon: BookOpen,
+        },
+        {
+            name: t.adminNavSettings,
+            href: route('admin.settings.index'),
+            active: route().current('admin.settings.*'),
+            icon: Settings,
+            superAdminOnly: true,
         },
     ];
 
@@ -112,30 +125,32 @@ export const AdminLayout: React.FC<PropsWithChildren<AdminLayoutProps>> = ({ chi
 
                     {/* Navigation Links */}
                     <nav className="p-4 space-y-1.5">
-                        {navItems.map((item) => {
-                            const Icon = item.icon;
-                            return (
-                                <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    className={`flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-bold transition-all ${
-                                        item.active
-                                            ? 'bg-gradient-to-r from-red-600 to-amber-600 text-white shadow-lg shadow-red-600/20'
-                                            : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
-                                    }`}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <Icon className="w-4 h-4" />
-                                        <span>{item.name}</span>
-                                    </div>
-                                    {item.badge && (
-                                        <span className="px-1.5 py-0.5 rounded-md bg-emerald-500 text-black text-[9px] font-black uppercase tracking-wider animate-pulse">
-                                            {item.badge}
-                                        </span>
-                                    )}
-                                </Link>
-                            );
-                        })}
+                        {navItems
+                            .filter((item) => !item.superAdminOnly || user?.is_super_admin)
+                            .map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                    <Link
+                                        key={item.name}
+                                        href={item.href}
+                                        className={`flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-bold transition-all ${
+                                            item.active
+                                                ? 'bg-gradient-to-r from-red-600 to-amber-600 text-white shadow-lg shadow-red-600/20'
+                                                : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <Icon className="w-4 h-4" />
+                                            <span>{item.name}</span>
+                                        </div>
+                                        {item.badge && (
+                                            <span className="px-1.5 py-0.5 rounded-md bg-emerald-500 text-black text-[9px] font-black uppercase tracking-wider animate-pulse">
+                                                {item.badge}
+                                            </span>
+                                        )}
+                                    </Link>
+                                );
+                            })}
                     </nav>
                 </div>
 
@@ -183,6 +198,34 @@ export const AdminLayout: React.FC<PropsWithChildren<AdminLayoutProps>> = ({ chi
                     </div>
 
                     <div className="flex items-center gap-3">
+                        {/* Super Admin Exclusive Quick Language Switcher */}
+                        {user?.is_super_admin && (
+                            <div className="flex items-center bg-neutral-800/90 rounded-xl p-0.5 sm:p-1 border border-neutral-700/80 text-[11px] sm:text-xs font-bold shadow-inner">
+                                <button
+                                    onClick={() => switchLocale('pl')}
+                                    className={`px-2 sm:px-2.5 py-1 rounded-lg transition-all ${
+                                        currentLocale === 'pl'
+                                            ? 'bg-gradient-to-r from-red-600 to-amber-600 text-white shadow-sm'
+                                            : 'text-neutral-400 hover:text-white'
+                                    }`}
+                                    title="Przełącz na język polski"
+                                >
+                                    PL
+                                </button>
+                                <button
+                                    onClick={() => switchLocale('en')}
+                                    className={`px-2 sm:px-2.5 py-1 rounded-lg transition-all ${
+                                        currentLocale === 'en'
+                                            ? 'bg-gradient-to-r from-red-600 to-amber-600 text-white shadow-sm'
+                                            : 'text-neutral-400 hover:text-white'
+                                    }`}
+                                    title="Switch to English"
+                                >
+                                    EN
+                                </button>
+                            </div>
+                        )}
+
                         <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-800 border border-neutral-700 text-xs text-neutral-300 font-semibold">
                             <MapPin className="w-3.5 h-3.5 text-amber-400" />
                             <span>{user?.branch ? user.branch.name : (currentLocale === 'en' ? 'All Branches' : 'Wszystkie Filie')}</span>

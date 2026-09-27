@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\KitchenDisplayController;
 use App\Http\Controllers\Admin\MenuManagementController;
 use App\Http\Controllers\Admin\OrderManagementController;
 use App\Http\Controllers\Admin\ReservationManagementController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
@@ -74,6 +75,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/menu', [MenuManagementController::class, 'index'])->name('menu.index');
         Route::patch('/menu/products/{product}', [MenuManagementController::class, 'updateProduct'])->name('menu.product.update');
         Route::patch('/menu/options/{option}', [MenuManagementController::class, 'updateModifierOption'])->name('menu.option.update');
+
+        // Settings (Super Admin Only)
+        Route::middleware('role:super-admin')->group(function () {
+            Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+            Route::patch('/settings', [SettingController::class, 'update'])->name('settings.update');
+        });
     });
 });
 
